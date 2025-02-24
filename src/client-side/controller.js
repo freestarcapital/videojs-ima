@@ -482,6 +482,11 @@ Controller.prototype.onContentAndAdsCompleted = function() {
 Controller.prototype.onPlayerDisposed = function() {
   this.contentAndAdsEndedListeners = [];
   this.sdkImpl.onPlayerDisposed();
+  this.adUi.onPlayerDisposed();
+
+  this.sdkImpl = null;
+  this.playerWrapper = null;
+  this.adUi = null;
 };
 
 

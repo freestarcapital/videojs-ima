@@ -91,6 +91,8 @@ const AdUi = function(controller) {
    */
   this.boundOnMouseMove = this.onMouseMove.bind(this);
 
+  this.abortController = new AbortController();
+
   /**
    * Stores data for the ad playhead tracker.
    */
@@ -134,15 +136,21 @@ AdUi.prototype.createAdContainer = function() {
   this.adContainerDiv.addEventListener(
       'mouseenter',
       this.showAdControls.bind(this),
-      false);
+      {
+        signal: this.abortController.signal,
+      });
   this.adContainerDiv.addEventListener(
       'mouseleave',
       this.hideAdControls.bind(this),
-      false);
+      {
+        signal: this.abortController.signal,
+      });
   this.adContainerDiv.addEventListener(
       'click',
       this.onAdContainerClick.bind(this),
-      false);
+      {
+        signal: this.abortController.signal,
+      });
   this.createControls();
   this.controller.injectAdContainerDiv(this.adContainerDiv);
 };
@@ -173,20 +181,26 @@ AdUi.prototype.createControls = function() {
   this.playPauseDiv.addEventListener(
       'click',
       this.onAdPlayPauseClick.bind(this),
-      false);
+      {
+        signal: this.abortController.signal,
+      });
 
   this.assignControlAttributes(this.muteDiv, 'ima-mute-div');
   this.addClass(this.muteDiv, 'ima-non-muted');
   this.muteDiv.addEventListener(
       'click',
       this.onAdMuteClick.bind(this),
-      false);
+      {
+        signal: this.abortController.signal,
+      });
 
   this.assignControlAttributes(this.sliderDiv, 'ima-slider-div');
   this.sliderDiv.addEventListener(
       'mousedown',
       this.onAdVolumeSliderMouseDown.bind(this),
-      false);
+      {
+        signal: this.abortController.signal,
+      });
 
   // Hide volume slider controls on iOS as they aren't supported.
   if (this.controller.getIsIos()) {
@@ -200,7 +214,9 @@ AdUi.prototype.createControls = function() {
   this.fullscreenDiv.addEventListener(
       'click',
       this.onAdFullscreenClick.bind(this),
-      false);
+      {
+        signal: this.abortController.signal,
+      });
 
   this.adContainerDiv.appendChild(this.controlsDiv);
   this.controlsDiv.appendChild(this.countdownDiv);
@@ -326,8 +342,12 @@ AdUi.prototype.mute = function() {
  * Listener for mouse down events during ad playback. Used for volume.
  */
 AdUi.prototype.onAdVolumeSliderMouseDown = function() {
-   document.addEventListener('mouseup', this.boundOnMouseUp, false);
-   document.addEventListener('mousemove', this.boundOnMouseMove, false);
+   document.addEventListener('mouseup', this.boundOnMouseUp, {
+    signal: this.abortController.signal,
+  });
+   document.addEventListener('mousemove', this.boundOnMouseMove, {
+    signal: this.abortController.signal,
+  });
 };
 
 
@@ -606,6 +626,34 @@ AdUi.prototype.getAdContainerDiv = function() {
 AdUi.prototype.setShowCountdown = function(showCountdownIn) {
   this.showCountdown = showCountdownIn;
   this.countdownDiv.style.display = this.showCountdown ? 'block' : 'none';
+};
+
+AdUi.prototype.onPlayerDisposed = function() {
+  this.abortController.abort();
+  this.abortController = null;
+
+  this.adContainerDiv.remove();
+
+  this.controlsDiv.remove();
+  this.countdownDiv.remove();
+  this.seekBarDiv.remove();
+  this.progressDiv.remove();
+  this.playPauseDiv.remove();
+  this.muteDiv.remove();
+  this.sliderDiv.remove();
+  this.sliderLevelDiv.remove();
+  this.fullscreenDiv.remove();
+
+  this.adContainerDiv = null;
+  this.controlsDiv = null;
+  this.countdownDiv = null;
+  this.seekBarDiv = null;
+  this.progressDiv = null;
+  this.playPauseDiv = null;
+  this.muteDiv = null;
+  this.sliderDiv = null;
+  this.sliderLevelDiv = null;
+  this.fullscreenDiv = null;
 };
 
 export default AdUi;
