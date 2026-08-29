@@ -55,7 +55,7 @@
     "@babel/core": "^7.23.7",
     "@babel/preset-env": "^7.23.7",
     "child_process": "^1.0.2",
-    "chromedriver": "^120.0.1",
+    "chromedriver": "^119.0.1",
     "conventional-changelog-cli": "^2.2.2",
     "conventional-changelog-videojs": "^3.0.2",
     "ecstatic": "^4.1.4",
