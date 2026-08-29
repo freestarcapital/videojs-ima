@@ -579,6 +579,20 @@ SdkImpl.prototype.onPlayerDisposed = function() {
     this.adsManager.destroy();
     this.adsManager = null;
   }
+
+  if (this.adsLoader) {
+    this.adsLoader.contentComplete();
+    this.adsLoader.destroy();
+
+    for (const key in this.adsLoader) {
+      // ADS Loader retains DOM elements, so we null them out here.
+      if (Object.prototype.hasOwnProperty.call(this.adsLoader, key)) {
+        this.adsLoader[key] = null;
+      }
+    }
+
+    this.adsLoader = null;
+  }
 };
 
 
