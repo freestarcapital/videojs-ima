@@ -230,3 +230,6 @@ The IMA SDK plugin for Video.js uses the IMA SDK, and as such is subject to the
 
 ## How do I contribute?
 See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
+## Deployment
+See [DEPLOYMENT.md](DEPLOYMENT.md) for instructions on how to deploy new versions.
